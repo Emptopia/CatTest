@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class GameManager : MonoSingleton<GameManager>
 {
     private int[,] existMap;
@@ -19,7 +19,12 @@ public class GameManager : MonoSingleton<GameManager>
     public int nextSpawnPosY = 0;
     public Entity.Dir nextSpawnDir = Entity.Dir.Up;
     public bool isStartLevel = true;
-    
+    public Text fishText;
+    public Text stageText;
+    public int fishNum = 0;
+    public int allFishNum = 54;
+
+    public bool isSwitching = false;
     //public Stack<SaveDataInScene> saveStack;
     
     public enum TileType
@@ -45,8 +50,8 @@ public class GameManager : MonoSingleton<GameManager>
     void Start()
     {
         InitGround();
-        InitMapID(0);
-
+        InitMapID(10);
+        fishText.text = "Fish:" + fishNum + "/" + allFishNum;
 
     }
 
@@ -88,12 +93,11 @@ public class GameManager : MonoSingleton<GameManager>
         if (isStartLevel == false)
         {
             //生成玩家位置
-            CreateGoInMap(TileType.Player,nextSpawnPosX,nextSpawnPosY);
-            PlayerController.Instance.isMove = false;
-            //PlayerController.Instance.player.selfDir = nextSpawnDir;
-            PlayerController.Instance.isSwitchLevel = true;
+            CreateGoInMap(TileType.Player, nextSpawnPosX, nextSpawnPosY);
+            //PlayerController.Instance.isSwitchLevel = true;
         }
         isStartLevel = false;
+        ShowStageText();
         return true;
     }
     
@@ -108,115 +112,6 @@ public class GameManager : MonoSingleton<GameManager>
                 //不重复出生
                 if(type == TileType.Player && isStartLevel == false)continue;    
                 CreateGoInMap(type, j, i);
-                
-                /*GameObject go = null;
-                Debug.Log("map = " + map[i,j]);
-                switch (map[i,j])
-                {
-                    case (int)TileType.GROUND:
-                        
-                        break;
-                    case (int)TileType.BOX:
-                        go = CreateGameObject(boxPrefab, i, j);
-                        go.name = "Box" + i + "_" + j;
-                        AddToGround(go,i,j);
-                        break;
-                    case (int)TileType.WALL:
-                        go = CreateGameObject(wallPrefab, i, j);
-                        go.name = "Wall" + i + "_" + j;
-                        
-                        AddToGround(go,i,j);
-                        break;
-                    case (int)TileType.TUNNEL_01:
-                        go = CreateGameObject(tunnelPrefab, i, j);
-                        Tunnel t01 = go.GetComponent<Tunnel>();
-                        t01.InitPassDir(true,true,false,false);
-                        go.name = "Tunnel01" + i + "_" + j;
-                        AddToGround(go,i,j);
-                        break;
-                    case (int)TileType.TUNNEL_23:
-                        go = CreateGameObject(tunnelPrefab, i, j);
-                        Tunnel t23 = go.GetComponent<Tunnel>();
-                        t23.InitPassDir(false,false,true,true);
-                        go.name = "Tunnel23" + i + "_" + j;
-                        AddToGround(go,i,j);
-                        break;
-                    case (int)TileType.TUNNEL_02:
-                        go = CreateGameObject(tunnelPrefab, i, j);
-                        Tunnel t02 = go.GetComponent<Tunnel>();
-                        t02.InitPassDir(true,false,true,false);
-                        go.name = "Tunnel02" + i + "_" + j;
-                        AddToGround(go,i,j);
-                        break;
-                    case (int)TileType.TUNNEL_03:
-                        go = CreateGameObject(tunnelPrefab, i, j);
-                        Tunnel t03 = go.GetComponent<Tunnel>();
-                        t03.InitPassDir(true,false,false,true);
-                        go.name = "Tunnel03" + i + "_" + j;
-                        AddToGround(go,i,j);
-                        break;
-                    case (int)TileType.TUNNEL_12:
-                        go = CreateGameObject(tunnelPrefab, i, j);
-                        Tunnel t12 = go.GetComponent<Tunnel>();
-                        t12.InitPassDir(false,true,true,false);
-                        go.name = "Tunnel12" + i + "_" + j;
-                        AddToGround(go,i,j);
-                        break;
-                    case (int)TileType.TUNNEL_13:
-                        go = CreateGameObject(tunnelPrefab, i, j);
-                        Tunnel t13 = go.GetComponent<Tunnel>();
-                        t13.InitPassDir(false,true,false,true);
-                        go.name = "Tunnel13" + i + "_" + j;
-                        AddToGround(go,i,j);
-                        break;
-                    case (int)TileType.TUNNEL_123:
-                        go = CreateGameObject(tunnelPrefab, i, j);
-                        Tunnel t123 = go.GetComponent<Tunnel>();
-                        t123.InitPassDir(false,true,true,true);
-                        go.name = "Tunnel123" + i + "_" + j;
-                        AddToGround(go,i,j);
-                        break;
-                    case (int)TileType.TUNNEL_023:
-                        go = CreateGameObject(tunnelPrefab, i, j);
-                        Tunnel t023 = go.GetComponent<Tunnel>();
-                        t023.InitPassDir(true,false,true,true);
-                        go.name = "Tunnel023" + i + "_" + j;
-                        AddToGround(go,i,j);
-                        break;
-                    case (int)TileType.TUNNEL_013:
-                        go = CreateGameObject(tunnelPrefab, i, j);
-                        Tunnel t013 = go.GetComponent<Tunnel>();
-                        t013.InitPassDir(true,true,true,false);
-                        go.name = "Tunnel013" + i + "_" + j;
-                        AddToGround(go,i,j);
-                        break;
-                    case (int)TileType.TUNNEL_012:
-                        go = CreateGameObject(tunnelPrefab, i, j);
-                        Tunnel t012 = go.GetComponent<Tunnel>();
-                        t012.InitPassDir(true,true,false,true);
-                        go.name = "Tunnel012" + i + "_" + j;
-                        AddToGround(go,i,j);
-                        break;
-                    case (int)TileType.TUNNEL_0123:
-                        go = CreateGameObject(tunnelPrefab, i, j);
-                        Tunnel t0123 = go.GetComponent<Tunnel>();
-                        t0123.InitPassDir(true,true,true,true);
-                        go.name = "Tunnel0123" + i + "_" + j;
-                        AddToGround(go,i,j);
-                        break;
-                    case(int)TileType.Player:
-                        go = CreateGameObject(playerPrefab, i, j);
-                        go.name = "Player" + i + "_" + j;
-                        Player player = go.GetComponent<Player>();
-                        AddToGround(go,i,j);
-                        PlayerController.Instance.player = player;
-                        break;
-                    case (int)TileType.FISH:
-                        go = CreateGameObject(fishPrefab, i, j);
-                        go.name = "Fish" + i + "_" + j;
-                        AddToGround(go,i,j);
-                        break;
-                }*/
                 
             }
         }
@@ -241,13 +136,13 @@ public class GameManager : MonoSingleton<GameManager>
             case(Entity.Dir.Up):
                 id = existMap[9, 0];
                 nextSpawnPosX = PlayerController.Instance.player.posX;
-                nextSpawnPosY = 0;
+                nextSpawnPosY = 8;
                 nextSpawnDir = Entity.Dir.Up;
                 break;
             case(Entity.Dir.Down):
                 id = existMap[9, 1];
                 nextSpawnPosX = PlayerController.Instance.player.posX;
-                nextSpawnPosY = 8;
+                nextSpawnPosY = 0;
                 nextSpawnDir = Entity.Dir.Down;
                 break;
             case(Entity.Dir.Right):
@@ -264,7 +159,14 @@ public class GameManager : MonoSingleton<GameManager>
                 break;
             
         }
-        return InitMapID(id);
+        Debug.Log(nextSpawnPosX + nextSpawnPosY);
+        bool res = InitMapID(id);
+        if (res)
+        {
+            PlayerController.Instance.isSwitchLevel = true;
+            PlayerController.Instance.isMove = false;
+        }
+        return res;
     }
 
     public void Restart()
@@ -390,7 +292,17 @@ public class GameManager : MonoSingleton<GameManager>
                         break;
                 }
     }
-    
+
+    public void GetFish()
+    {
+        fishNum++;
+        fishText.text = "Fish:" + fishNum + "/" + allFishNum;
+    }
+
+    public void ShowStageText()
+    {
+        stageText.text = "Stage " + mapID;
+    }
     GameObject CreateGameObject(GameObject go, int row, int col)
     {
         //注意，pos和实际position的y相反

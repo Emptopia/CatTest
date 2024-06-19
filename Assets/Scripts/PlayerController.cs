@@ -7,6 +7,7 @@ public class PlayerController : MonoSingleton<PlayerController>
 {
     public bool isMove = false;
     public float moveTime = 0.2f;
+    public float switchTime = 0.2f;
     public float normalTime = 0.2f;
     public float dashTime = 0.05f;
     public float timeSet = 0f;
@@ -23,8 +24,21 @@ public class PlayerController : MonoSingleton<PlayerController>
     // Update is called once per frame
     void Update()
     {
-        if (!player) return;
+        player.isInTunnel = false;
+        Ground g = GameManager.Instance.GetGround(player.posX, player.posY);
+        for (int i = 0; i < g.entities.Count; i++)
+        {
+            
+            Entity en = g.entities[i].GetComponent<Entity>();
+            if (en.entityType == Entity.EntityType.Tunnel)
+            {
+                player.isInTunnel = true;
+                break;
+            }
+        }
         
+        
+        if (!player) return;
         if (isMove)
         {
             timeSet += Time.deltaTime;
@@ -37,19 +51,21 @@ public class PlayerController : MonoSingleton<PlayerController>
 
         if (isSwitchLevel)
         {
+            isMove = false;
             timeSet += Time.deltaTime;
-            if (timeSet >= moveTime)
+            if (timeSet >= switchTime)
             {
                 isSwitchLevel = false;
                 timeSet = 0;
-                player.isInTunnel = true;
+                GameManager.Instance.Restart();
                 player.selfDir = GameManager.Instance.nextSpawnDir;
+                
             }
         }
         
 
 
-        if (isMove == false)
+        if (!isMove && !isSwitchLevel)
         {
             if (player.isInTunnel)
             {

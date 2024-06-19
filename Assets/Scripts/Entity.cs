@@ -66,7 +66,14 @@ public class Entity : MonoBehaviour
                     if (this.entityType == EntityType.Player && tn.tryOut(dir))
                     {
                         //切换关卡
-                        if (!GameManager.Instance.SwitchNearLevel(dir)) return false;
+                        if (GameManager.Instance.SwitchNearLevel(dir))
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                 }
             }
@@ -110,6 +117,9 @@ public class Entity : MonoBehaviour
                     {
                         //角色可以吃鱼干
                         tempEntity.gameObject.SetActive(false);
+                        int[,] map = MapContainer.Instance.maps[GameManager.Instance.mapID];
+                        map[aimY, aimX] = 0;
+                        GameManager.Instance.GetFish();
                     }
                     else
                     {
