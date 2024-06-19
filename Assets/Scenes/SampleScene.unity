@@ -134,6 +134,8 @@ GameObject:
   - component: {fileID: 321065118}
   - component: {fileID: 321065117}
   - component: {fileID: 321065119}
+  - component: {fileID: 321065120}
+  - component: {fileID: 321065121}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -160,6 +162,7 @@ MonoBehaviour:
   tunnelPrefab: {fileID: 6578595774859417735, guid: 63699381af0e1704eb8d2e155f806d56, type: 3}
   fishPrefab: {fileID: 680496079580967835, guid: ed7c09c145fc71742969dca9012661ff, type: 3}
   grounds: []
+  mapID: 0
 --- !u!4 &321065118
 Transform:
   m_ObjectHideFlags: 0
@@ -188,9 +191,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isMove: 0
-  moveTime: 0.05
+  moveTime: 0.2
+  normalTime: 0.2
+  dashTime: 0.05
   timeSet: 0
   player: {fileID: 0}
+--- !u!114 &321065120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 321065116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba52db326872e214aac2583f30a73a25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &321065121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 321065116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b03a634154f2f2469df96f949853142, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

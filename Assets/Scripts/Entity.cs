@@ -31,6 +31,7 @@ public class Entity : MonoBehaviour
     protected bool CanBeMoved = false;
     protected bool CanBeDestroyed = true;
     public EntityType entityType;
+    public GameManager.TileType tileType;
     // Start is called before the first frame update
     void Start()
     {
@@ -52,10 +53,45 @@ public class Entity : MonoBehaviour
         else if (dir == Dir.Down) aimY += 1;
         else if (dir == Dir.Right) aimX += 1;
         else if (dir == Dir.Left) aimX -= 1;
-        //越界返回
-        if (aimX < 0 || aimX >= 18 || aimY < 0 || aimY >= 9) return false;
-        //判断move
         Ground selfGround = GameManager.Instance.GetGround(posX, posY);
+        //越界，判断能否切关
+        if (aimX < 0 || aimX >= 18 || aimY < 0 || aimY >= 9)
+        {
+            for (int i = 0; i < selfGround.entities.Count; i++)
+            {
+                Entity tempEntity = selfGround.entities[i].GetComponent<Entity>();
+                if (tempEntity.entityType == EntityType.Tunnel)
+                {
+                    Tunnel tn = selfGround.entities[i].GetComponent<Tunnel>();
+                    if (this.entityType == EntityType.Player && tn.tryOut(dir))
+                    {
+                        //切换关卡
+                        if (!GameManager.Instance.SwitchNearLevel(dir)) return false;
+                    }
+                }
+            }
+            return false;
+        }
+            
+            
+        //判断move自身条件
+        
+        for (int i = 0; i < selfGround.entities.Count; i++)
+        {
+            Entity tempEntity = selfGround.entities[i].GetComponent<Entity>();
+            switch (tempEntity.entityType)
+            {
+                case (EntityType.Tunnel):
+                    Tunnel tn = selfGround.entities[i].GetComponent<Tunnel>();
+                    //尝试通过的不是玩家，或者该方向不可通行
+                    if (this.entityType != EntityType.Player || !tn.tryOut(dir)) return false;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        //判断move目标条件
         Ground aimGround = GameManager.Instance.GetGround(aimX, aimY);
         for (int i = 0; i < aimGround.entities.Count; i++)
         {
@@ -84,7 +120,7 @@ public class Entity : MonoBehaviour
                 case(EntityType.Tunnel):
                     Tunnel tn = aimGround.entities[i].GetComponent<Tunnel>();
                     //尝试通过的不是玩家，或者该方向不可通行
-                    if (this.entityType != EntityType.Player || !tn.tryPass(dir)) return false;
+                    if (this.entityType != EntityType.Player || !tn.tryIn(dir)) return false;
                     else
                     {
                         //目标是隧道且可以通行时，提前改变tag
@@ -96,7 +132,14 @@ public class Entity : MonoBehaviour
                     break;
             }
         }
-        //确定要位移后
+        /*
+        //确定要位移后，保存记录
+        SaveDataInScene.Instance.SaveGround(selfGround);
+        SaveDataInScene.Instance.SaveGround(aimGround);
+        //玩家位移结束，则推入onemove
+        if(entityType == EntityType.Player && isInTunnel == false)
+            SaveDataInScene.Instance.SaveNextMove();
+            */
         
         //更新自身地块
         for (int i = 0; i < selfGround.entities.Count; i++)
@@ -133,6 +176,7 @@ public class Entity : MonoBehaviour
         UpdatePos();
         return true;
     }
+
 
     public void UpdatePos()
     {
@@ -177,6 +221,29 @@ public class Entity : MonoBehaviour
                 break;
             case(Dir.Left):
                 return Dir.Up;
+                break;
+            default:
+                break;
+        }
+        Debug.Log("没找到方向，默认为右");
+        return Dir.Right;
+    }
+    
+    public Entity.Dir myBack()
+    {
+        switch (selfDir)
+        {
+            case(Dir.Up):
+                return Dir.Down;
+                break;
+            case(Dir.Down):
+                return Dir.Up;
+                break;
+            case(Dir.Right):
+                return Dir.Left;
+                break;
+            case(Dir.Left):
+                return Dir.Right;
                 break;
             default:
                 break;

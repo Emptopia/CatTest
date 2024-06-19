@@ -26,7 +26,7 @@ public class Tunnel : Entity
         
     }
 
-    public bool tryPass(Dir dir)
+    public bool tryIn(Dir dir)
     {
         switch (dir)
         {
@@ -41,6 +41,30 @@ public class Tunnel : Entity
                 break;
             case(Dir.Left):
                 if (passRight == false) return false;
+                break;
+            default:
+                break;
+        }
+
+        return true;
+
+    }
+    
+    public bool tryOut(Dir dir)
+    {
+        switch (dir)
+        {
+            case(Dir.Up):
+                if (passUp == false) return false;
+                break;
+            case(Dir.Down):
+                if (passDown == false) return false;
+                break;
+            case(Dir.Right):
+                if (passRight == false) return false;
+                break;
+            case(Dir.Left):
+                if (passLeft == false) return false;
                 break;
             default:
                 break;

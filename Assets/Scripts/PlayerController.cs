@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoSingleton<PlayerController>
 {
     public bool isMove = false;
-    public float moveTime = 0.05f;
+    public float moveTime = 0.2f;
+    public float normalTime = 0.2f;
+    public float dashTime = 0.05f;
     public float timeSet = 0f;
+    public bool isSwitchLevel = false;
     
     
     public Player player;
@@ -19,20 +23,37 @@ public class PlayerController : MonoSingleton<PlayerController>
     // Update is called once per frame
     void Update()
     {
-        if (isMove == true)
+        if (!player) return;
+        
+        if (isMove)
         {
             timeSet += Time.deltaTime;
+            if (timeSet >= moveTime)
+            {
+                isMove = false;
+                timeSet = 0;
+            }
         }
-        if (timeSet >= moveTime)
+
+        if (isSwitchLevel)
         {
-            isMove = false;
-            timeSet = 0;
+            timeSet += Time.deltaTime;
+            if (timeSet >= moveTime)
+            {
+                isSwitchLevel = false;
+                timeSet = 0;
+                player.isInTunnel = true;
+                player.selfDir = GameManager.Instance.nextSpawnDir;
+            }
         }
+        
+
 
         if (isMove == false)
         {
             if (player.isInTunnel)
             {
+                moveTime = dashTime;
                 isMove = true;
                 Entity.Dir d = player.selfDir;
                 
@@ -43,7 +64,10 @@ public class PlayerController : MonoSingleton<PlayerController>
                     {
                         if (!player.Move(player.myRight()))
                         {
+                            Debug.Log("回头了");
                             //返回原点，待补充
+                            player.selfDir = player.myBack();
+                            player.Move(player.selfDir);
                         }
                     }
                 }
@@ -51,6 +75,7 @@ public class PlayerController : MonoSingleton<PlayerController>
             }
             else
             {
+                moveTime = normalTime;
                 //逃离隧道可以判断引爆
                 if (player.readyForExplode == true)
                 { 
@@ -97,15 +122,6 @@ public class PlayerController : MonoSingleton<PlayerController>
         
     }
 
-    void push(Entity.Dir dir)
-    {
-
-        if (dir == Entity.Dir.Up)
-        {
-            
-        }
-        
-    }
 
     void Explode(Ground g1, Ground g2, Ground g3)
     {
@@ -141,26 +157,35 @@ public class PlayerController : MonoSingleton<PlayerController>
     
     void tryMove()
     {
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.RightArrow))
         {
             isMove = true;
             player.Move(Entity.Dir.Right);
             
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (Input.GetKey(KeyCode.LeftArrow))
         {
             isMove = true;
             player.Move(Entity.Dir.Left);
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        else if (Input.GetKey(KeyCode.DownArrow))
         {
             isMove = true;
             player.Move(Entity.Dir.Down);
         }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        else if (Input.GetKey(KeyCode.UpArrow))
         {
             isMove = true;
             player.Move(Entity.Dir.Up);
+        }
+        else if (Input.GetKey(KeyCode.R))
+        {
+            GameManager.Instance.Restart();
+        }
+        else if (Input.GetKeyDown(KeyCode.Z))
+        {
+            /*GameManager.Instance.ReadLastMove();*/
+            
         }
     }
 
