@@ -269,10 +269,10 @@ public class Entity : MonoBehaviour
         switch (dir)
         {
             case(Dir.Up):
-                tposY += 1;
+                tposY -= 1;
                 break;
             case(Dir.Down):
-                tposY -= 1;
+                tposY += 1;
                 break;
             case(Dir.Right):
                 tposX += 1;

@@ -50,7 +50,7 @@ public class GameManager : MonoSingleton<GameManager>
     void Start()
     {
         InitGround();
-        InitMapID(10);
+        InitMapID(0);
         fishText.text = "Fish:" + fishNum + "/" + allFishNum;
 
     }
@@ -165,6 +165,7 @@ public class GameManager : MonoSingleton<GameManager>
         {
             PlayerController.Instance.isSwitchLevel = true;
             PlayerController.Instance.isMove = false;
+            mapID = id;
         }
         return res;
     }

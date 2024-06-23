@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -98,26 +99,30 @@ public class PlayerController : MonoSingleton<PlayerController>
                     int tposX;
                     int tposY;
                     Entity.Dir d = player.selfDir;
+                    Entity.Dir dl = player.myLeft();
+                    Entity.Dir dr = player.myRight();
+                    Entity.Dir db = player.myBack();
                     //遍历，存在1个无实体则不引爆
                     player.dirToPos(d,out tposX,out tposY);
                     Ground g1 = GameManager.Instance.GetGround(tposX, tposY);
-                    d = player.myLeft();
-                    player.dirToPos(d,out tposX,out tposY);
+                    player.dirToPos(dl,out tposX,out tposY);
                     Ground g2 = GameManager.Instance.GetGround(tposX, tposY);
-                    d = player.myRight();
-                    player.dirToPos(d,out tposX,out tposY);
+                    player.dirToPos(dr,out tposX,out tposY);
                     Ground g3 = GameManager.Instance.GetGround(tposX, tposY);
-                    if (g1.entities.Count == 0 || g2.entities.Count == 0 || g3.entities.Count == 0)
+                    player.dirToPos(db,out tposX,out tposY);
+                    Ground g4 = GameManager.Instance.GetGround(tposX, tposY);
+                    
+                    if (g1.entities.Count == 0 || g2.entities.Count == 0 || g3.entities.Count == 0 || g4.entities.Count == 0)
                     {
                         //不引爆
                         player.readyForExplode = false;
                         
                     }//尝试推动3个方向
-                    else if (!player.Move(player.selfDir))
+                    else if (!player.Move(d))
                     {
-                        if (!player.Move(player.myLeft()))
+                        if (!player.Move(dl))
                         {
-                            if (!player.Move(player.myRight()))
+                            if (!player.Move(dr))
                             {
                                 //都无法推动则引爆
                                 Explode(g1, g2, g3);
