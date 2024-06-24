@@ -340,44 +340,6 @@ public class GameManager : MonoSingleton<GameManager>
         Vector3 pos = new Vector3(posX, -posY);
         return pos;
     }
-
-    /*
-    public void ReadLastMove()
-    {
-        SaveDataInScene savedata = SaveDataInScene.Instance;
-            //弹出最近的移动
-            if (savedata.SaveDataInOneScene.Count == 0)
-            {
-                Debug.Log("已经没有上一步");
-                return;
-            }
-            List<groundData> list = savedata.SaveDataInOneScene.Pop();
-            for (int i = 0; i < list.Count; i++)
-            {
-                ReadGround(list[i]);
-            }
-            list.Clear();
-        
-            Debug.Log("回退结束");
-        
-    }
     
-    public void ReadGround(groundData gd)
-    {
-        Debug.Log("读取改变地面");
-        Ground g = GetGround(gd.posX, gd.posY);
-        for (int i = 0; i < g.entities.Count;i++)
-        {
-            Debug.Log("摧毁");
-            Destroy(g.entities[i]);
-        }
-        g.entities.Clear();
-        for (int i = 0; i < gd.tileTypes.Count; i++)
-        {
-            Debug.Log("创建");
-            CreateGoInMap(gd.tileTypes[i], gd.posX, gd.posY);
-        }
-    }
-    */
     
 }

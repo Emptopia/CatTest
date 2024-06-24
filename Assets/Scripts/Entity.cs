@@ -46,6 +46,7 @@ public class Entity : MonoBehaviour
     
     public bool Move(Dir dir)
     {
+        if (PlayerController.Instance.isSwitchLevel == true) return false;
         isInTunnel = false;
         int aimX = posX;
         int aimY = posY;
@@ -115,8 +116,9 @@ public class Entity : MonoBehaviour
                 case(EntityType.Fish):
                     if (this.entityType == EntityType.Player)
                     {
+                        aimGround.entities.Clear();
                         //角色可以吃鱼干
-                        tempEntity.gameObject.SetActive(false);
+                        Destroy(tempEntity.gameObject);
                         int[,] map = MapContainer.Instance.maps[GameManager.Instance.mapID];
                         map[aimY, aimX] = 0;
                         GameManager.Instance.GetFish();

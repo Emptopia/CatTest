@@ -274,6 +274,8 @@ MonoBehaviour:
   dashTime: 0.05
   timeSet: 0
   isSwitchLevel: 0
+  isRestart: 0
+  restartTime: 0.05
   player: {fileID: 0}
 --- !u!114 &321065120
 MonoBehaviour:

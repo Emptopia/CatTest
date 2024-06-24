@@ -13,8 +13,8 @@ public class PlayerController : MonoSingleton<PlayerController>
     public float dashTime = 0.05f;
     public float timeSet = 0f;
     public bool isSwitchLevel = false;
-    
-    
+    public bool isRestart = false;
+    public float restartTime = 0.05f;
     public Player player;
     // Start is called before the first frame update
     void Start()
@@ -25,6 +25,8 @@ public class PlayerController : MonoSingleton<PlayerController>
     // Update is called once per frame
     void Update()
     {
+        if (!player) return;
+        
         player.isInTunnel = false;
         Ground g = GameManager.Instance.GetGround(player.posX, player.posY);
         for (int i = 0; i < g.entities.Count; i++)
@@ -37,9 +39,19 @@ public class PlayerController : MonoSingleton<PlayerController>
                 break;
             }
         }
+
+        if (isRestart)
+        {
+            timeSet += Time.deltaTime;
+            if (timeSet >= restartTime)
+            {
+                PlayerController.Instance.player.selfDir = GameManager.Instance.nextSpawnDir;
+                isRestart = false;
+                timeSet = 0;
+            }
+        }
         
         
-        if (!player) return;
         if (isMove)
         {
             timeSet += Time.deltaTime;
@@ -66,7 +78,7 @@ public class PlayerController : MonoSingleton<PlayerController>
         
 
 
-        if (!isMove && !isSwitchLevel)
+        if (!isMove && !isSwitchLevel && !isRestart)
         {
             if (player.isInTunnel)
             {
@@ -199,8 +211,9 @@ public class PlayerController : MonoSingleton<PlayerController>
             isMove = true;
             player.Move(Entity.Dir.Up);
         }
-        else if (Input.GetKey(KeyCode.R))
+        else if (Input.GetKeyDown(KeyCode.R))
         {
+            isRestart = true;
             GameManager.Instance.Restart();
         }
         else if (Input.GetKeyDown(KeyCode.Z))
