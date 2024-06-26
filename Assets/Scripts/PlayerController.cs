@@ -16,16 +16,24 @@ public class PlayerController : MonoSingleton<PlayerController>
     public bool isRestart = false;
     public float restartTime = 0.05f;
     public Player player;
+
+    private SpriteRenderer playerSprite;
     // Start is called before the first frame update
     void Start()
     {
-        
+        playerSprite = player.GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!player) return;
+        if(!playerSprite)
+            playerSprite = player.GetComponent<SpriteRenderer>();
+        if (player.selfDir == Entity.Dir.Left)
+            playerSprite.flipX = false;
+        else if(player.selfDir == Entity.Dir.Right)
+            playerSprite.flipX = true;
         
         player.isInTunnel = false;
         Ground g = GameManager.Instance.GetGround(player.posX, player.posY);

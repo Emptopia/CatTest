@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 3463755217050505212}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.41, y: 0.41, z: 0.41}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -74,8 +74,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 96e7fdd8b053f1f4ea12d41a82690da0, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -97,3 +97,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7b01aedddd3b8549a291e63481b0c44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  posX: 0
+  posY: 0
+  isInTunnel: 0
+  canExplode: 0
+  readyForExplode: 0
+  selfDir: 0
+  entityType: 0
+  tileType: 0
